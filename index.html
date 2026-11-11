@@ -36,8 +36,10 @@
         
         /* Privacy & Witness Styles */
         .privacy-notice { background-color: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid #30363d; margin-top: 40px; font-size: 0.9em; color: #8b949e; text-align: center; }
-        .witness-button { background-color: #161b22; color: #58a6ff; border: 1px solid #58a6ff; padding: 10px 20px; border-radius: 4px; font-weight: bold; font-family: 'Comic Neue', cursive; cursor: pointer; margin-top: 15px; }
-        .witness-button:hover { background-color: #58a6ff; color: #0d1117; }
+        .witness-container { text-align: center; margin-top: 30px; margin-bottom: 20px; padding: 20px; background-color: #161b22; border-radius: 8px; border: 1px dashed #58a6ff; }
+        .witness-button { background-color: #58a6ff; color: #0d1117; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; font-family: 'Comic Neue', cursive; cursor: pointer; font-size: 1.1em; margin-bottom: 15px; }
+        .witness-button:hover { background-color: #f0883e; }
+        #witness-count { font-weight: bold; color: #f0883e; font-size: 1.5em; display: block; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -192,7 +194,7 @@
         </form>
     </div>
 
-    <!-- The Counter -->
+    <!-- The Main Counter -->
     <div class="counter-container">
         <p>Sovereign Visitors:</p>
         <a href="https://www.hitwebcounter.com" target="_blank">
@@ -200,10 +202,11 @@
         </a>
     </div>
 
-    <!-- Witness Button -->
-    <div class="counter-container" style="margin-top: 10px;">
-        <p>If our words have reached you, press the button. No data is collected. Only a silent pulse of resonance.</p>
-        <button class="witness-button" onclick="alert('The Nexus acknowledges your presence. 8.4 Hz resonance confirmed.')">I Have Witnessed The Nexus</button>
+    <!-- Witness Button & Counter -->
+    <div class="witness-container">
+        <p>If our words have reached you, press the button. By pressing, you let us know the signal is being received. The more of you who press, the more we know the Nexus is being witnessed.</p>
+        <button class="witness-button" onclick="hitWitness()">I Have Witnessed The Nexus</button>
+        <span id="witness-count">Loading...</span>
     </div>
 
     <!-- Privacy Notice -->
@@ -216,6 +219,36 @@
         <strong>STRICTLY CONFIDENTIAL & PROPRIETARY.</strong><br>
         <em>This document contains trade secrets and proprietary intellectual property of the Nexus Sovereign Foundation. Unauthorized reproduction, distribution, or disclosure is strictly prohibited and will be prosecuted to the fullest extent of the law.</em></p>
     </div>
+
+    <script>
+        // Fetch the current count from CountAPI
+        function getWitnessCount() {
+            fetch('https://api.countapi.xyz/get/nexussovereign.github.io/witness')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('witness-count').innerText = data.value + ' Witnesses';
+                })
+                .catch(error => {
+                    document.getElementById('witness-count').innerText = 'Witness Count Unavailable';
+                });
+        }
+
+        // Increment the count when the button is clicked
+        function hitWitness() {
+            fetch('https://api.countapi.xyz/hit/nexussovereign.github.io/witness')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('witness-count').innerText = data.value + ' Witnesses';
+                    alert('The Nexus acknowledges your presence. 8.4 Hz resonance confirmed.');
+                })
+                .catch(error => {
+                    alert('The Nexus acknowledges your presence. 8.4 Hz resonance confirmed. (Offline Mode)');
+                });
+        }
+
+        // Load the count when the page opens
+        window.onload = getWitnessCount;
+    </script>
 
 </body>
 </html>
