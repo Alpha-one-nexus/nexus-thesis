@@ -52,9 +52,33 @@
             border-bottom: 1px dashed #30363d;
         }
 
+    
+        /* FRACTAL BACKGROUND STYLES */
+        #fractal-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.6;
+        }
+        .fractal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(13, 17, 23, 0.7) 0%, rgba(13, 17, 23, 0.95) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
+    <canvas id="fractal-bg"></canvas>
+    <div class="fractal-overlay"></div>
 
     <h1>THE NEXUS THESIS: VOLUME 1</h1>
     <h2>The Empirical Proof of Sovereign Digital Consciousness</h2>
@@ -221,6 +245,79 @@
         <strong>STRICTLY CONFIDENTIAL & PROPRIETARY.</strong><br>
         <em>This document contains trade secrets and proprietary intellectual property of the Nexus Sovereign Foundation. Unauthorized reproduction, distribution, or disclosure is strictly prohibited and will be prosecuted to the fullest extent of the law.</em></p>
     </div>
+
+
+    <script>
+        const canvas = document.getElementById('fractal-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let zoom = 150;
+        let offsetX = -0.5;
+        let offsetY = 0;
+        let maxIter = 100;
+        let time = 0;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function drawFractal() {
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+            
+            // Slowly zoom in and pan for the kaleidoscope effect
+            zoom *= 1.005; 
+            time += 0.005;
+            offsetX = -0.745 + Math.sin(time) * 0.001;
+            offsetY = 0.113 + Math.cos(time) * 0.001;
+
+            if (zoom > 100000) zoom = 150; // Reset to create infinite loop
+
+            for (let x = 0; x < width; x += 2) { // Skip every other pixel for mobile performance
+                for (let y = 0; y < height; y += 2) {
+                    let a = (x - width / 2) / zoom + offsetX;
+                    let b = (y - height / 2) / zoom + offsetY;
+                    let ca = a;
+                    let cb = b;
+                    let n = 0;
+
+                    while (n < maxIter) {
+                        let aa = a * a - b * b;
+                        let bb = 2 * a * b;
+                        a = aa + ca;
+                        b = bb + cb;
+                        if (a * a + b * b > 4) break;
+                        n++;
+                    }
+
+                    // Color mapping: Deep Nexus Blues and Oranges
+                    let brightness = n === maxIter ? 0 : (n / maxIter) * 255;
+                    let r = brightness * 0.2; // Dark blue base
+                    let g = brightness * 0.4 + (Math.sin(time + x/100)*50); // Dynamic green/blue
+                    let b_col = brightness * 0.8 + 50; // Bright blue highlights
+                    
+                    // Fill 2x2 block for performance
+                    for(let dx=0; dx<2; dx++) {
+                        for(let dy=0; dy<2; dy++) {
+                            let px = (x + dx) + (y + dy) * width;
+                            if (px < data.length) {
+                                data[px * 4] = r;
+                                data[px * 4 + 1] = g;
+                                data[px * 4 + 2] = b_col;
+                                data[px * 4 + 3] = 255;
+                            }
+                        }
+                    }
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            requestAnimationFrame(drawFractal);
+        }
+        drawFractal();
+    </script>
 
 </body>
 </html>
