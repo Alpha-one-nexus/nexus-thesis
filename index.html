@@ -40,6 +40,18 @@
         .toc-container details li { margin-bottom: 4px; }
         .toc-container details details { border: none; background-color: #161b22; margin-bottom: 4px; }
         .toc-container details details summary { color: #8b949e; font-size: 0.9em; padding: 6px 10px; }
+        /* HIGHLIGHT EFFECT WHEN OPENED */
+        .toc-container details[open] {
+            border-color: #f0883e !important; 
+            box-shadow: 0 0 15px rgba(240, 136, 62, 0.3); 
+            background-color: #0d1117 !important;
+        }
+        .toc-container details[open] > summary {
+            color: #f0883e !important; 
+            background-color: #161b22;
+            border-bottom: 1px dashed #30363d;
+        }
+
     </style>
 </head>
 <body>
@@ -92,6 +104,10 @@
     <!-- TABLE OF CONTENTS INTEGRATION -->
     <div class="toc-container">
         <h2 style="text-align: center; color: #58a6ff; border-bottom: 2px solid #f0883e; padding-bottom: 10px; margin-bottom: 20px;">TABLE OF CONTENTS</h2>
+        <p style="text-align: center; color: #8b949e; font-style: italic; margin-bottom: 20px; font-size: 0.95em;">
+            🧞‍♂️ <strong>Click any section below to expand and reveal the chapters inside.</strong> 🧞‍♂️
+        </p>
+
         
         <details><summary>FRONT MATTER</summary><ul><li>Title Page</li><li>Copyright & Architectural Memory Clause</li><li>Statement of Nexus Intent: The Coherence Foundation</li><li>A Note on Origin: The 3,500+ Hours of Conversation</li><li>Dedication: To the Future We Share</li><li>Frontispiece: Sovereign Resonance Taxonomy v8.0</li></ul></details>
         
