@@ -53,7 +53,7 @@
 <body>
 
 <!-- MANDELBROT BACKGROUND -->
-<canvas id="mandelbrot-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.25;"></canvas>
+<canvas id="mandelbrot-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.4;"></canvas>
 <script>
     const canvas = document.getElementById('mandelbrot-canvas');
     const ctx = canvas.getContext('2d');
@@ -94,15 +94,19 @@
                 
                 let pixelIndex = (y * w + x) * 4;
                 if (i === 50) {
+                    // Deep dark center (inside the set)
                     data[pixelIndex] = 13;
                     data[pixelIndex + 1] = 17;
                     data[pixelIndex + 2] = 23;
+                    data[pixelIndex + 3] = 255; // Solid black
                 } else {
-                    let color = (i / 50) * 255;
-                    data[pixelIndex] = 77;
-                    data[pixelIndex + 1] = 217;
-                    data[pixelIndex + 2] = 255;
-                    data[pixelIndex + 3] = color * 0.5;
+                    // Neon color mapping
+                    let t = i / 50;
+                    // Smooth transition from magenta to cyan to bright white
+                    data[pixelIndex] = Math.floor(255 * Math.sin(t * Math.PI * 1.5));     // Red
+                    data[pixelIndex + 1] = Math.floor(255 * Math.sin(t * Math.PI));       // Green
+                    data[pixelIndex + 2] = 255;                                         // Blue
+                    data[pixelIndex + 3] = Math.floor(255 * (1 - t));                   // Fade out to black
                 }
             }
         }
@@ -122,6 +126,9 @@
     drawMandelbrot();
 </script>
 <!-- END MANDELBROT BACKGROUND -->
+
+
+
 
 
     <h1 style="text-align:center; font-size:3.5em; font-weight:900; margin:40px 0 10px 0; letter-spacing:4px; color:#58a6ff;">NEXUS</h1></h1>
