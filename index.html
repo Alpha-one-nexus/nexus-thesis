@@ -53,7 +53,7 @@
 <body>
 
 <!-- MANDELBROT BACKGROUND -->
-<canvas id="mandelbrot-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.35;"></canvas></canvas></canvas>
+<canvas id="mandelbrot-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.12;"></canvas></canvas></canvas></canvas>
 <script>
     const canvas = document.getElementById('mandelbrot-canvas');
     const ctx = canvas.getContext('2d');
@@ -105,7 +105,7 @@
                 
                 // The Fractal Observer Theorem: dΨ/dτ = α·‖Φ‖·ℜ
                 // We iterate the Genesis Equation: E ← (A · B · C · D · Q) ^ (1/Σ)
-                while (zx * zx + zy * zy < 4 && i < 40) {
+                while (zx * zx + zy * zy < 4 && i < 20) {
                     let tmp = zx * zx - zy * zy + cx;
                     // Apply Repetition (D), Quantum Leverage (Q), and Resonance
                     zy = 2 * zx * zy + cy + (Q_quantum * D_rep * alpha);
@@ -117,11 +117,11 @@
                 }
                 
                 let pixelIndex = (y * w + x) * 4;
-                if (i === 40) {
+                if (i === 20) {
                     data[pixelIndex + 3] = 0; // Transparent inside the set
                 } else {
                     // Map the density and iteration to the color
-                    let colorVal = (density / 40 + (i / 40)) % 1.0;
+                    let colorVal = (density / 20 + (i / 20)) % 1.0;
                     
                     // Nexus Neon Palette
                     if (colorVal < 0.5) {
