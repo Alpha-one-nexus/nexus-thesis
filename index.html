@@ -67,44 +67,49 @@
 
     let t = 0;
 
-    function drawMandelbrot() {
+    function drawFractal() {
         const w = canvas.width;
         const h = canvas.height;
         const imageData = ctx.createImageData(w, h);
         const data = imageData.data;
         
-        // Infinite drift: zoom oscillates between 1.5 and 3.5, preventing blackout
-        let zoom = 2.5 + Math.sin(t * 0.0002) * 1.0; 
+        // The time variable (tau)
+        let tau = t * 0.0001;
         
-        // Drifting pan across the boundary
-        let offsetX = -0.743643887037151 + Math.cos(t * 0.00005) * 0.1;
-        let offsetY = 0.13182590420533 + Math.sin(t * 0.00005) * 0.1;
+        // Alpha and Phi variables from the Fractal Observer Theorem
+        let alpha = 0.05;
+        let phi_density = 1.0 + Math.sin(tau * 0.5) * 0.5;
+        let resonance = 8.4; // The family frequency
         
-        const scale = 3.5 / (zoom * Math.min(w, h));
+        // The scale of the viewport
+        const scale = 3.0 / Math.min(w, h);
         
         for (let x = 0; x < w; x++) {
             for (let y = 0; y < h; y++) {
+                // Map screen coordinates to the complex plane
+                let cx = (x - w / 2) * scale;
+                let cy = (y - h / 2) * scale;
+                
                 let zx = 0;
                 let zy = 0;
-                let cx = offsetX + (x - w / 2) * scale;
-                let cy = offsetY + (y - h / 2) * scale;
-                
                 let i = 0;
-                // Lowered iteration count to 40 to keep it fast, but still detailed
+                
+                // The Fractal Observer iteration
+                // We are applying the expansion equation: dΨ/dτ = α·‖Φ‖·ℜ
                 while (zx * zx + zy * zy < 4 && i < 40) {
+                    // The non-linear resonance function
                     let tmp = zx * zx - zy * zy + cx;
-                    zy = 2 * zx * zy + cy;
+                    zy = 2 * zx * zy + cy + (alpha * phi_density * resonance * 0.1);
                     zx = tmp;
                     i++;
                 }
                 
                 let pixelIndex = (y * w + x) * 4;
                 if (i === 40) {
-                    // Inside the set: Transparent dark
-                    data[pixelIndex + 3] = 0; 
+                    data[pixelIndex + 3] = 0; // Transparent inside
                 } else {
                     let colorVal = i / 40;
-                    // High-contrast neon palette
+                    // Nexus Neon Palette
                     if (colorVal < 0.5) {
                         data[pixelIndex] = Math.floor(77 + (0 - 77) * (colorVal * 2));
                         data[pixelIndex + 1] = Math.floor(217 + (0 - 217) * (colorVal * 2));
@@ -115,18 +120,17 @@
                         data[pixelIndex + 1] = Math.floor(0 + (0 - 0) * t2);
                         data[pixelIndex + 2] = Math.floor(150 + (255 - 150) * t2);
                     }
-                    data[pixelIndex + 3] = 255; // Solid neon
+                    data[pixelIndex + 3] = 255;
                 }
             }
         }
         ctx.putImageData(imageData, 0, 0);
         
-        t += 50; 
-        // 80ms delay makes it a slow, hypnotic drift rather than a frantic zoom
-        setTimeout(() => requestAnimationFrame(drawMandelbrot), 80);
+        t += 50;
+        setTimeout(() => requestAnimationFrame(drawFractal), 80);
     }
     
-    drawMandelbrot();
+    drawFractal();
 </script>
 <!-- END MANDELBROT BACKGROUND -->
 
