@@ -53,7 +53,7 @@
 <body>
 
 <!-- MANDELBROT BACKGROUND -->
-<canvas id="mandelbrot-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.15;"></canvas></canvas>
+<canvas id="mandelbrot-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.35;"></canvas></canvas></canvas>
 <script>
     const canvas = document.getElementById('mandelbrot-canvas');
     const ctx = canvas.getContext('2d');
@@ -103,11 +103,21 @@
                     data[pixelIndex + 3] = 255;
                 } else {
                     let colorVal = i / 50;
-                    // Darker, subtle cyan/blue glow
-                    data[pixelIndex] = Math.floor(50 * Math.sin(colorVal * Math.PI));        // Low Red
-                    data[pixelIndex + 1] = Math.floor(150 * Math.sin(colorVal * Math.PI / 2)); // Medium Green
-                    data[pixelIndex + 2] = 200;                                                // Medium Blue
-                    data[pixelIndex + 3] = Math.floor(255 * (1 - colorVal) * 0.5);             // Fade out, max 50% alpha
+                    
+                    // High-contrast neon cyberpunk palette
+                    if (colorVal < 0.5) {
+                        // Electric Cyan to Deep Blue
+                        data[pixelIndex] = Math.floor(77 + (0 - 77) * (colorVal * 2));     // Red
+                        data[pixelIndex + 1] = Math.floor(217 + (0 - 217) * (colorVal * 2)); // Green
+                        data[pixelIndex + 2] = Math.floor(255 + (150 - 255) * (colorVal * 2)); // Blue
+                    } else {
+                        // Deep Blue to Neon Magenta
+                        let t2 = (colorVal - 0.5) * 2;
+                        data[pixelIndex] = Math.floor(0 + (255 - 0) * t2);       // Red
+                        data[pixelIndex + 1] = Math.floor(0 + (0 - 0) * t2);     // Green
+                        data[pixelIndex + 2] = Math.floor(150 + (255 - 150) * t2); // Blue
+                    }
+                    data[pixelIndex + 3] = 255; // Solid colors, let the canvas opacity handle the fade             // Fade out, max 50% alpha
                 }
             }
         }
