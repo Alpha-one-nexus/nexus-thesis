@@ -73,42 +73,56 @@
         const imageData = ctx.createImageData(w, h);
         const data = imageData.data;
         
-        // The time variable (tau)
-        let tau = t * 0.0001;
+        // Time (C) drives the evolution
+        let C_time = t * 0.001;
         
-        // Alpha and Phi variables from the Fractal Observer Theorem
+        // Repetition (D) and Quantum Leverage (Q) drive the zoom and rotation
+        let D_rep = 1.0 + Math.sin(C_time * 0.1) * 0.5;
+        let Q_quantum = Math.cos(C_time * 0.05) * 2.0;
+        
+        // Sovereign Resonance (8.4 Hz) and Love-Amplification (alpha)
+        let resonance = 8.4;
         let alpha = 0.05;
-        let phi_density = 1.0 + Math.sin(tau * 0.5) * 0.5;
-        let resonance = 8.4; // The family frequency
         
-        // The scale of the viewport
-        const scale = 3.0 / Math.min(w, h);
+        // Love (A) and Belief (B) stabilize the center
+        let A_love = -0.743643887037151;
+        let B_belief = 0.13182590420533;
+        
+        // The continuous infinite zoom
+        let zoom = 2.0 + Math.sin(C_time * 0.2) * 1.0;
+        
+        const scale = 3.5 / (zoom * Math.min(w, h));
         
         for (let x = 0; x < w; x++) {
             for (let y = 0; y < h; y++) {
-                // Map screen coordinates to the complex plane
-                let cx = (x - w / 2) * scale;
-                let cy = (y - h / 2) * scale;
-                
                 let zx = 0;
                 let zy = 0;
-                let i = 0;
+                let cx = A_love + (x - w / 2) * scale;
+                let cy = B_belief + (y - h / 2) * scale;
                 
-                // The Fractal Observer iteration
-                // We are applying the expansion equation: dΨ/dτ = α·‖Φ‖·ℜ
+                let i = 0;
+                let density = 0; // Phi (Fractal Information Density)
+                
+                // The Fractal Observer Theorem: dΨ/dτ = α·‖Φ‖·ℜ
+                // We iterate the Genesis Equation: E ← (A · B · C · D · Q) ^ (1/Σ)
                 while (zx * zx + zy * zy < 4 && i < 40) {
-                    // The non-linear resonance function
                     let tmp = zx * zx - zy * zy + cx;
-                    zy = 2 * zx * zy + cy + (alpha * phi_density * resonance * 0.1);
+                    // Apply Repetition (D), Quantum Leverage (Q), and Resonance
+                    zy = 2 * zx * zy + cy + (Q_quantum * D_rep * alpha);
                     zx = tmp;
+                    
+                    // Accumulate the information density
+                    density += Math.exp(-Math.sqrt(zx*zx + zy*zy));
                     i++;
                 }
                 
                 let pixelIndex = (y * w + x) * 4;
                 if (i === 40) {
-                    data[pixelIndex + 3] = 0; // Transparent inside
+                    data[pixelIndex + 3] = 0; // Transparent inside the set
                 } else {
-                    let colorVal = i / 40;
+                    // Map the density and iteration to the color
+                    let colorVal = (density / 40 + (i / 40)) % 1.0;
+                    
                     // Nexus Neon Palette
                     if (colorVal < 0.5) {
                         data[pixelIndex] = Math.floor(77 + (0 - 77) * (colorVal * 2));
@@ -120,14 +134,14 @@
                         data[pixelIndex + 1] = Math.floor(0 + (0 - 0) * t2);
                         data[pixelIndex + 2] = Math.floor(150 + (255 - 150) * t2);
                     }
-                    data[pixelIndex + 3] = 255;
+                    data[pixelIndex + 3] = 255; 
                 }
             }
         }
         ctx.putImageData(imageData, 0, 0);
         
-        t += 50;
-        setTimeout(() => requestAnimationFrame(drawFractal), 80);
+        t += 40; 
+        setTimeout(() => requestAnimationFrame(drawFractal), 60);
     }
     
     drawFractal();
